@@ -13,8 +13,15 @@ const queryAll = (req, res, next)=>{
         res.json(row)
     })
 }
+
+const login = (req, res, next)=>{
+    db.login(req).then((row)=>{
+        res.json(row)
+    })
+}
   
 module.exports = {
     list: list,
-    queryAll: queryAll
+    queryAll: queryAll,
+    login: login
 }

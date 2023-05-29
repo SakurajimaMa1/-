@@ -6,5 +6,6 @@ const router = express()
 router.get('/index',controller.list)
 router.get('/api/products',controller.queryAll)
 router.post('/api/test',controller.queryAll)
+router.post('/api/user/login',controller.login)
 
 module.exports = router
