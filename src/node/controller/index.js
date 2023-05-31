@@ -19,9 +19,19 @@ const login = (req, res, next)=>{
         res.json(row)
     })
 }
+
+const user = (req, res, next)=>{
+    res.json(db.user())
+}
+
+const cartsProductsSum = (req, res, next)=>{
+    res.json(db.cartsProductsSum())
+}
   
 module.exports = {
     list: list,
     queryAll: queryAll,
-    login: login
+    login: login,
+    user: user,
+    cartsProductsSum: cartsProductsSum
 }
