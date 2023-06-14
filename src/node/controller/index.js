@@ -25,7 +25,9 @@ const user = (req, res, next)=>{
 }
 
 const cartsProductsSum = (req, res, next)=>{
-    res.json(db.cartsProductsSum())
+    db.cartsProductsSum().then((row)=>{
+        res.json(row)
+    })
 }
 
 const getProductsIdInfo = (req, res, next)=>{
@@ -35,7 +37,9 @@ const getProductsIdInfo = (req, res, next)=>{
 }
 
 const carts = (req, res, next)=>{
-    res.json(db.carts(req))
+    db.carts(req).then((row)=>{
+        res.json(row)
+    })
 }
   
 module.exports = {

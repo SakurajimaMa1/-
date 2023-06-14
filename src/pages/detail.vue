@@ -101,8 +101,9 @@
           productId:this.id,
           selected: true
         }).then((res={cartProductVoList:0})=>{
-          this.$store.dispatch('saveCartCount',res.cartTotalQuantity);
-          this.$router.push('/cart');
+            console.log(res);
+            this.$store.dispatch('saveCartCount',res.cartProductVoList.length);
+        //   this.$router.push('/cart');
         });
       }
     }

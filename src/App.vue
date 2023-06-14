@@ -12,7 +12,7 @@ export default {
   },
   data() {
     return {
-      res: {}
+      res: {},
     }
   },
   mounted() {
@@ -30,7 +30,7 @@ export default {
         this.$store.dispatch('saveCartCount', res);
       })
     }
-  }
+  },
 }
 </script>
 

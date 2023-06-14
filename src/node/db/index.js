@@ -72,16 +72,23 @@ function user(){
 }
 
 function cartsProductsSum() {
-    if (Object.keys(loginUser).length === 0) {
-        return {
-            "status": 0,
-            "data": 0
+    return new Promise((resolve, reject) => {
+        if (Object.keys(loginUser).length === 0) {
+            cartsInfo = {
+                "status": 0,
+                "data": 0
+            }
+            resolve(cartsInfo)
         }
-    }
-    return {
-        "status": 0,
-        "data": 1
-    }
+        connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
+            if (err) reject(err);
+            cartsInfo = {
+                "status": 0,
+                "data": rows.length
+            }
+            resolve(cartsInfo);
+        })
+    })
 }
 
 function getProductsIdInfo(req) {
@@ -117,9 +124,17 @@ function getProductsIdInfo(req) {
 }
 
 async function carts(req) {
+    if (Object.keys(loginUser).length === 0) {
+        return {
+            "status": 10,
+            "msg": "用户未登录,请登录"
+        }
+    }
+
     let productId = req.body.productId
     let selected = req.body.selected
     let queryProduct = {}
+    let userId = loginUser.data.id
 
     let product = {
         params: {
@@ -127,22 +142,33 @@ async function carts(req) {
         }
     }
 
-
     await this.getProductsIdInfo(product).then((res)=>{
-        queryProduct = res
+        queryProduct = res.data
     })
-    
-    console.log(queryProduct);
 
-    return {
-        "status": 0,
-        "data": {
-            "a": productId,
-            "b": selected,
-            "product": product,
-            "queryProduct": queryProduct
-        }
-    }
+    const sql = "INSERT INTO carts(userId, productId, quantity, productName, productSubtitle, productMainImage, productPrice, productStatus, productTotalPrice, productStock, productSelected) values(?,?,?,?,?,?,?,?,?,?,?)"
+    const sqlParams = [`${userId}`, `${productId}`, `12`, `${queryProduct.name}`, `${queryProduct.subtitle}`, `${queryProduct.subImages}`, `${queryProduct.price}`, `${queryProduct.status}`, `${queryProduct.price}`, `${queryProduct.stock}`,`${selected}`]
+    connection.query(sql, sqlParams, (err, rows) => {
+        if (err) return {
+            "status": 1,
+            "msg": "添加失败"
+        };
+    })
+
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM carts WHERE userId = '${userId}'`, (err, rows) => {
+            if (err) reject(err);
+            cartsInfo = {
+                "status": 0,
+                "data": {
+                    cartProductVoList: rows
+                },
+                "selectedAll": true,
+                "cartTotalPrice": 89389.75
+            }
+            resolve(cartsInfo);
+        })
+    })
 }
 
 module.exports = {
