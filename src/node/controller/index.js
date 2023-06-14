@@ -27,11 +27,23 @@ const user = (req, res, next)=>{
 const cartsProductsSum = (req, res, next)=>{
     res.json(db.cartsProductsSum())
 }
+
+const getProductsIdInfo = (req, res, next)=>{
+    db.getProductsIdInfo(req).then((row)=>{
+        res.json(row)
+    })
+}
+
+const carts = (req, res, next)=>{
+    res.json(db.carts(req))
+}
   
 module.exports = {
-    list: list,
-    queryAll: queryAll,
-    login: login,
-    user: user,
-    cartsProductsSum: cartsProductsSum
+    list,
+    queryAll,
+    login,
+    user,
+    cartsProductsSum,
+    getProductsIdInfo,
+    carts
 }

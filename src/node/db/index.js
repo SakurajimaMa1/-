@@ -14,13 +14,13 @@ setInterval(function () {
 function conn() {
     connection.connect((err)=>{
         if (err) throw err;
-        console.log('Database connect successful....');
+        console.log('数据库连接成功....');
     })
 }
 
 function queryAll() {
     return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM student', (err, rows) => {
+        connection.query('SELECT * FROM user', (err, rows) => {
             if (err) reject(err);
             resolve(rows);
         });
@@ -84,9 +84,72 @@ function cartsProductsSum() {
     }
 }
 
+function getProductsIdInfo(req) {
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM detail WHERE id = '${req.params.id}'`, (err, rows) => {
+            if (err) reject(err);
+            res = {
+                "status": 1,
+                "msg": "该商品已下架或删除"
+            }
+            if (Object.keys(rows).length !== 0 || typeof rows == 'undefined' || rows == null) {
+                res = {
+                    "status": 0,
+                    "data": {
+                        "id": rows[0].id,
+                        "categoryId": rows[0].categoryId,
+                        "name": rows[0].name,
+                        "subtitle": rows[0].subtitle,
+                        "mainImage": rows[0].mainImage,
+                        "subImages": rows[0].subImages,
+                        "detail": rows[0].detail,
+                        "price": rows[0].price,
+                        "stock": rows[0].stock,
+                        "status": rows[0].status,
+                        "createTime": rows[0].createTime,
+                        "updateTime": rows[0].updateTime
+                    }
+                }
+            }
+            resolve(res);
+        });
+    });
+}
+
+async function carts(req) {
+    let productId = req.body.productId
+    let selected = req.body.selected
+    let queryProduct = {}
+
+    let product = {
+        params: {
+            id: productId
+        }
+    }
+
+
+    await this.getProductsIdInfo(product).then((res)=>{
+        queryProduct = res
+    })
+    
+    console.log(queryProduct);
+
+    return {
+        "status": 0,
+        "data": {
+            "a": productId,
+            "b": selected,
+            "product": product,
+            "queryProduct": queryProduct
+        }
+    }
+}
+
 module.exports = {
-    queryAll: queryAll,
-    login: login,
-    user: user,
-    cartsProductsSum: cartsProductsSum
+    queryAll,
+    login,
+    user,
+    cartsProductsSum,
+    getProductsIdInfo,
+    carts
 }

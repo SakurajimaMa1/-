@@ -5,7 +5,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'App',
   components: {
@@ -22,12 +21,12 @@ export default {
   },
   methods: {
     getUser() {
-      this.axios.get('/user').then((res)=>{
+      this.axios.get('/user').then((res={})=>{
         this.$store.dispatch('saveUserName', res.username);
       })
     },
     getCartCount() {
-      this.axios.get('/carts/products/sum').then((res)=>{
+      this.axios.get('/carts/products/sum').then((res=0)=>{
         this.$store.dispatch('saveCartCount', res);
       })
     }

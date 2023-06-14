@@ -21,5 +21,5 @@ app.use(router)
 
 //端口监听
 app.listen(port, () => {
-  console.log(`running on port ${port}`)
+  console.log(`正在运行于：http://localhost:${port}`)
 })
