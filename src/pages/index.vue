@@ -74,12 +74,14 @@
                             <div class="item" v-for="(item, j) in arr" v-bind:key="j">
                                 <span v-bind:class="{'new-pro': j%2==0}">新品</span>
                                 <div class="item-img">
-                                    <img v-lazy="'//cdn.cnbj1.fds.api.mi-img.com/nr-pub/202304171459_dd35f1e6215da63c356e352d4d398ce6.png?thumb=1&w=200&h=200&f=webp&q=90'" alt="">
+                                    <img v-lazy="'/imgs/'+item.mainImage" alt="">
+                                    <!-- <img v-lazy="'https://cdn.cnbj1.fds.api.mi-img.com/nr-pub/202305241112_ecb14876904f09f3cbc605350a02eff0.png?thumb=1&w=200&h=200&f=webp&q=90'" alt=""> -->
+                                    
                                 </div>
                                 <div class="item-info">
-                                    <h3>小米0</h3>
-                                    <p>奥德赛大家就</p>
-                                    <p class="price" @click="addCart(item.id)">2111元</p>
+                                    <h3>{{ item.name }}</h3>
+                                    <p>{{ item.subtitle }}</p>
+                                    <p class="price" @click="addCart(item.id)">{{item.price}}元</p>
                                 </div>
                             </div>
                         </div>
@@ -205,7 +207,7 @@
             }
         },
         mounted(){
-            // this.init();
+            this.init();
         },
         methods:{
             init(){
@@ -215,23 +217,21 @@
                         pageSize: 14
                     }
                 }).then((res)=>{
-                    res.list = res.list.slice(6,14)
+                    // res.list = res.list.slice(6,14)
                     this.phoneList = [res.list.slice(0,4), res.list.slice(4,8)]
                 })
             },
             addCart(id) {
-                this.showModal = true;
-                id
-                return;
-                // this.axios.post('/carts', {
-                //     productId: id,
-                //     selected: true
-                // }).then((res)=>{
-                    // this.showModal = true;
-                    // this.$store.dispatch('saveCartCount',res.cartTotalQuantity);
-                // }).catch(()=>{
-                //     this.showModal = true;
-                // })
+                console.log(id);
+                this.axios.post('/carts', {
+                    productId: id,
+                    selected: true
+                }).then((res)=>{
+                    this.showModal = true;
+                    this.$store.dispatch('saveCartCount',res.cartProductVoList.length);
+                }).catch(()=>{
+                    this.showModal = true;
+                })
             },
             goToCart() {
                 this.$router.push('/cart');

@@ -41,6 +41,28 @@ const carts = (req, res, next)=>{
         res.json(row)
     })
 }
+
+const logout = (req, res, next)=>{
+    res.json(db.logout())
+}
+
+const getCarts = (req, res, next)=>{
+    db.getCarts(req).then((row)=>{
+        res.json(row)
+    })
+}
+
+const updataProductQuantitySelected = (req, res, next)=>{
+    db.updataProductQuantitySelected(req).then((row)=>{
+        res.json(row)
+    })
+}
+
+const deleteCartsProduct = (req, res, next)=>{
+    db.deleteCartsProduct(req).then((row)=>{
+        res.json(row)
+    })
+}
   
 module.exports = {
     list,
@@ -49,5 +71,9 @@ module.exports = {
     user,
     cartsProductsSum,
     getProductsIdInfo,
-    carts
+    carts,
+    logout,
+    getCarts,
+    updataProductQuantitySelected,
+    deleteCartsProduct
 }

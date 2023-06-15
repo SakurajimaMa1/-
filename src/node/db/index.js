@@ -20,9 +20,35 @@ function conn() {
 
 function queryAll() {
     return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM user', (err, rows) => {
+        connection.query('SELECT * FROM detail', (err, rows) => {
             if (err) reject(err);
-            resolve(rows);
+            res = {
+                "status": 1,
+                "msg": "参数错误"
+            }
+            if (Object.keys(rows).length !== 0 || typeof rows == 'undefined' || rows == null) {
+                console.log();
+                list = []
+                for (i = 0; i < rows.length; i++) {
+                    resDetail = {
+                        "id": rows[i].id,
+                        "categoryId": rows[i].categoryId,
+                        "name": rows[i].name,
+                        "subtitle": rows[i].subtitle,
+                        "mainImage": rows[i].mainImage,
+                        "status": rows[i].status,
+                        "price": rows[i].price
+                    }
+                    list.push(resDetail)
+                }
+                res = {
+                    "status": 0,
+                    "data": {
+                        "list": list
+                    }
+                }
+            }
+            resolve(res);
         });
     });
 }
@@ -39,7 +65,7 @@ function login(req) {
                 "status": 1,
                 "msg": "密码错误"
             }
-            if (err) throw(err);
+            if (err) reject(err);
             if (Object.keys(rows).length !== 0 || typeof rows == 'undefined' || rows == null) {
                 res = {
                     "status": 0,
@@ -161,10 +187,107 @@ async function carts(req) {
             cartsInfo = {
                 "status": 0,
                 "data": {
-                    cartProductVoList: rows
+                    "cartProductVoList": rows,
+                    "selectedAll": true,
+                    "cartTotalPrice": 89389.75
                 },
-                "selectedAll": true,
-                "cartTotalPrice": 89389.75
+                
+            }
+            resolve(cartsInfo);
+        })
+    })
+}
+
+function logout() {
+    loginUser = {}
+    return {
+        "status": 0,
+        "msg": "退出登录"
+    }
+}
+
+function getCarts() {
+    return new Promise((resolve, reject) => {
+        if (Object.keys(loginUser).length === 0) {
+            cartsInfo = {
+                "status": 10,
+                "msg": "用户未登录,请登录"
+            }
+            resolve(cartsInfo)
+        }
+        connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
+            if (err) reject(err);
+            cartsInfo = {
+                "status": 0,
+                "data": {
+                    "cartProductVoList": rows,
+                    "selectedAll": false,
+                    "cartTotalPrice": 89389.75
+                },
+            }
+            resolve(cartsInfo);
+        })
+    })
+}
+
+function updataProductQuantitySelected(req) {
+    let productId = req.params.id
+    let quantity = req.body.quantity
+    let selected = req.body.selected
+
+    const sql = 'UPDATE carts SET quantity = ?, productSelected = ? WHERE productId = ?'
+    const sqlParams = [`${quantity}`, `${selected}`, `${productId}`]
+
+    connection.query(sql, sqlParams,(err, rows) => {
+        if (err) return {
+            "status": 1,
+            "msg": "修改失败"
+        };
+    })
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
+            if (err) reject(err);
+            cartsInfo = {
+                "status": 0,
+                "data": {
+                    "cartProductVoList": rows,
+                    "selectedAll": true,
+                    "cartTotalPrice": 89389.75
+                },
+            }
+            resolve(cartsInfo);
+        })
+    })
+}
+
+function deleteCartsProduct(req) {
+    let productId = req.params.id
+    if (Object.keys(loginUser).length === 0) {
+        return {
+            "status": 10,
+            "msg": "用户未登录,请登录"
+        }
+    }
+    const sql = 'DELETE FROM carts WHERE productId = ?';
+    const sqlParams = [`${productId}`];
+
+    connection.query(sql, sqlParams,(err, rows) => {
+        if (err) return {
+            "status": 1,
+            "msg": "删除失败"
+        };
+    })
+
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
+            if (err) reject(err);
+            cartsInfo = {
+                "status": 0,
+                "data": {
+                    "cartProductVoList": rows,
+                    "selectedAll": true,
+                    "cartTotalPrice": 89389.75
+                },
             }
             resolve(cartsInfo);
         })
@@ -177,5 +300,9 @@ module.exports = {
     user,
     cartsProductsSum,
     getProductsIdInfo,
-    carts
+    carts,
+    logout,
+    getCarts,
+    updataProductQuantitySelected,
+    deleteCartsProduct
 }

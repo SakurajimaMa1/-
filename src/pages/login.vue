@@ -57,7 +57,6 @@
             this.$store.dispatch('saveUserName', res.username);
             this.$router.push('/index');
             this.axios.get('/carts/products/sum').then((res=0)=>{
-              console.log(res);
               this.$store.dispatch('saveCartCount', res);
             })
           })
