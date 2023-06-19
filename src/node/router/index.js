@@ -16,6 +16,8 @@ router.post('/api/carts',controller.carts)
 router.post('/api/user/logout',controller.logout)
 
 router.put('/api/carts/:id',controller.updataProductQuantitySelected)
+// router.put('/api/carts/selectAll',controller.productQuantitySelectAll)
+// router.put('/api/carts/unSelectAll',controller.productQuantitySelectAll)
 
 router.delete('/api/carts/:id',controller.deleteCartsProduct)
 

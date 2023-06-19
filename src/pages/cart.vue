@@ -128,7 +128,7 @@
           this.list = res.cartProductVoList || [];
           this.allChecked = res.selectedAll;
           this.cartTotalPrice = res.cartTotalPrice;
-          this.checkedNum = this.list.filter(item=>item.productSelected).length;
+          this.checkedNum = this.list.filter(item=>JSON.parse(item.productSelected)).length;
         },
         // 购物车下单
         order(){

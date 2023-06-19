@@ -53,10 +53,27 @@ const getCarts = (req, res, next)=>{
 }
 
 const updataProductQuantitySelected = (req, res, next)=>{
-    db.updataProductQuantitySelected(req).then((row)=>{
-        res.json(row)
-    })
+    if (req.params.id == "unSelectAll") {
+        db.updataProductQuantitySelectedAll("false").then((row)=>{
+            res.json(row)
+        })
+    } else if (req.params.id == "selectAll") {
+        db.updataProductQuantitySelectedAll("true").then((row)=>{
+            res.json(row)
+        })
+    } else {
+        db.updataProductQuantitySelected(req).then((row)=>{
+            res.json(row)
+        })
+    }
 }
+
+// const productQuantitySelectAll = (req, res, next)=>{
+//     db.productQuantitySelectAll(req).then((row)=>{
+//         res.json(row)
+//     })
+// }
+
 
 const deleteCartsProduct = (req, res, next)=>{
     db.deleteCartsProduct(req).then((row)=>{
@@ -75,5 +92,6 @@ module.exports = {
     logout,
     getCarts,
     updataProductQuantitySelected,
-    deleteCartsProduct
+    deleteCartsProduct,
+    // productQuantitySelectAll
 }

@@ -184,12 +184,18 @@ async function carts(req) {
     return new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM carts WHERE userId = '${userId}'`, (err, rows) => {
             if (err) reject(err);
+            let selected = true;
+            for (i = 0; i < rows.length; i++) {
+                if (rows[i].productSelected == "false") {
+                    selected = false;
+                }
+            }
             cartsInfo = {
                 "status": 0,
                 "data": {
                     "cartProductVoList": rows,
-                    "selectedAll": true,
-                    "cartTotalPrice": 89389.75
+                    "selectedAll": selected,
+                    "cartTotalPrice": countCartTotalPrice(rows).toFixed(2)
                 },
                 
             }
@@ -217,12 +223,18 @@ function getCarts() {
         }
         connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
             if (err) reject(err);
+            let selected = true;
+            for (i = 0; i < rows.length; i++) {
+                if (rows[i].productSelected == "false") {
+                    selected = false;
+                }
+            }
             cartsInfo = {
                 "status": 0,
                 "data": {
                     "cartProductVoList": rows,
-                    "selectedAll": false,
-                    "cartTotalPrice": 89389.75
+                    "selectedAll": selected,
+                    "cartTotalPrice": countCartTotalPrice(rows).toFixed(2)
                 },
             }
             resolve(cartsInfo);
@@ -230,11 +242,52 @@ function getCarts() {
     })
 }
 
+function updataProductQuantitySelectedAll(params) {
+    connection.query(`UPDATE carts SET productSelected = '${params}'`, (err, rows) => {
+        if(err) return(err);
+        return({
+            "status": 0,
+            "data": {
+                "修改成功": rows
+            }
+        });
+    })
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
+            if (err) reject(err);
+            let selected = true;
+            for (i = 0; i < rows.length; i++) {
+                if (rows[i].productSelected == "false") {
+                    selected = false;
+                }
+            }
+            cartsInfo = {
+                "status": 0,
+                "data": {
+                    "cartProductVoList": rows,
+                    "selectedAll": selected,
+                    "cartTotalPrice": countCartTotalPrice(rows).toFixed(2)
+                },
+            }
+            resolve(cartsInfo);
+        })
+    })
+}
+
+function countCartTotalPrice(rows) {
+    let count = 0;
+    for (i = 0; i < rows.length; i++) {
+        if (rows[i].productSelected == "true") {
+            count += rows[i].productPrice * parseInt(rows[i].quantity);
+        }
+    }
+    return count;
+}
+
 function updataProductQuantitySelected(req) {
     let productId = req.params.id
     let quantity = req.body.quantity
     let selected = req.body.selected
-
     const sql = 'UPDATE carts SET quantity = ?, productSelected = ? WHERE productId = ?'
     const sqlParams = [`${quantity}`, `${selected}`, `${productId}`]
 
@@ -244,18 +297,44 @@ function updataProductQuantitySelected(req) {
             "msg": "修改失败"
         };
     })
+
     return new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
             if (err) reject(err);
+            let selected = true;
+            for (i = 0; i < rows.length; i++) {
+                if (rows[i].productSelected == "false") {
+                    selected = false;
+                }
+            }
             cartsInfo = {
                 "status": 0,
                 "data": {
                     "cartProductVoList": rows,
-                    "selectedAll": true,
-                    "cartTotalPrice": 89389.75
+                    "selectedAll": selected,
+                    "cartTotalPrice": countCartTotalPrice(rows).toFixed(2)
                 },
             }
             resolve(cartsInfo);
+        })
+    })
+}
+
+function productQuantitySelectAll(req) {
+    let param = "true";
+    if (req.params.id == "unSelectAll") {
+        param = "false";
+    }
+    console.log(2);
+    return new Promise((resolve, reject) => {
+        connection.query(`UPDATE carts SET productSelected = '${param}'`, (err, rows) => {
+            if(err) reject(err);
+            resolve({
+                "status": 0,
+                "data": {
+                    "修改成功": rows
+                }
+            });
         })
     })
 }
@@ -281,12 +360,18 @@ function deleteCartsProduct(req) {
     return new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
             if (err) reject(err);
+            let selected = true;
+            for (i = 0; i < rows.length; i++) {
+                if (rows[i].productSelected == "false") {
+                    selected = false;
+                }
+            }
             cartsInfo = {
                 "status": 0,
                 "data": {
                     "cartProductVoList": rows,
-                    "selectedAll": true,
-                    "cartTotalPrice": 89389.75
+                    "selectedAll": selected,
+                    "cartTotalPrice": countCartTotalPrice(rows).toFixed(2)
                 },
             }
             resolve(cartsInfo);
@@ -304,5 +389,7 @@ module.exports = {
     logout,
     getCarts,
     updataProductQuantitySelected,
-    deleteCartsProduct
+    deleteCartsProduct,
+    updataProductQuantitySelectedAll,
+    productQuantitySelectAll
 }
