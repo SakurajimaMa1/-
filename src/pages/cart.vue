@@ -94,7 +94,7 @@
             }
             --quantity;
           }else if(type == '+'){
-            if(quantity > item.productStock){
+            if(quantity >= JSON.parse(item.productStock)){
               this.$message.warning('购买数量不能超过库存数量');
               return;
             }
@@ -132,7 +132,7 @@
         },
         // 购物车下单
         order(){
-          let isCheck = this.list.every(item=>!item.productSelected);
+          let isCheck = this.list.every(item=>!JSON.parse(item.productSelected));
           if(isCheck){
             this.$message.warning('请选择一件商品');
           }else{

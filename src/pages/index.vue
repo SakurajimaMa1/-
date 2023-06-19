@@ -222,7 +222,6 @@
                 })
             },
             addCart(id) {
-                console.log(id);
                 this.axios.post('/carts', {
                     productId: id,
                     selected: true

@@ -173,7 +173,7 @@ async function carts(req) {
     })
 
     const sql = "INSERT INTO carts(userId, productId, quantity, productName, productSubtitle, productMainImage, productPrice, productStatus, productTotalPrice, productStock, productSelected) values(?,?,?,?,?,?,?,?,?,?,?)"
-    const sqlParams = [`${userId}`, `${productId}`, `12`, `${queryProduct.name}`, `${queryProduct.subtitle}`, `${queryProduct.subImages}`, `${queryProduct.price}`, `${queryProduct.status}`, `${queryProduct.price}`, `${queryProduct.stock}`,`${selected}`]
+    const sqlParams = [`${userId}`, `${productId}`, `1`, `${queryProduct.name}`, `${queryProduct.subtitle}`, `${queryProduct.subImages}`, `${queryProduct.price}`, `${queryProduct.status}`, `${queryProduct.price}`, `${queryProduct.stock}`,`${selected}`]
     connection.query(sql, sqlParams, (err, rows) => {
         if (err) return {
             "status": 1,
@@ -284,12 +284,31 @@ function countCartTotalPrice(rows) {
     return count;
 }
 
-function updataProductQuantitySelected(req) {
+// 获取购物车中物品的单价
+async function getPrice(productId) {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}' AND productId = '${productId}'`, (err, rows) => {
+            resolve(rows);
+        })
+    })
+}
+
+// 更改购物车数量
+async function updataProductQuantitySelected(req) {
     let productId = req.params.id
     let quantity = req.body.quantity
     let selected = req.body.selected
-    const sql = 'UPDATE carts SET quantity = ?, productSelected = ? WHERE productId = ?'
-    const sqlParams = [`${quantity}`, `${selected}`, `${productId}`]
+    let totalPrice = 0
+    let price = 0
+
+    await getPrice(productId).then((row)=>{
+        price = row[0].productPrice
+    })
+
+    totalPrice = price * quantity;
+
+    const sql = 'UPDATE carts SET quantity = ?, productSelected = ? , productTotalPrice = ? WHERE productId = ?'
+    const sqlParams = [`${quantity}`, `${selected}`, `${totalPrice}`,`${productId}`]
 
     connection.query(sql, sqlParams,(err, rows) => {
         if (err) return {
@@ -379,6 +398,131 @@ function deleteCartsProduct(req) {
     })
 }
 
+// 添加收货地址
+function shippings(req) {
+    let userId = loginUser.data.id;
+    let receiverName = req.body.receiverName;
+    let receiverPhone = req.body.receiverPhone;
+    let receiverMobile = req.body.receiverMobile;
+    let receiverProvince = req.body.receiverProvince;
+    let receiverCity = req.body.receiverCity;
+    let receiverDistrict = req.body.receiverDistrict;
+    let receiverAddress = req.body.receiverAddress;
+    let receiverZip = req.body.receiverZip;
+
+    const sql = 'INSERT INTO shippings(userId, receiverName, receiverPhone, receiverMobile, receiverProvince, receiverCity, receiverDistrict, receiverAddress, receiverZip) values(?,?,?,?,?,?,?,?,?)';
+    const sqlParams = [`${userId}`, `${receiverName}`, `${receiverPhone}`, `${receiverMobile}`, `${receiverProvince}`, `${receiverCity}`, `${receiverDistrict}`, `${receiverAddress}`, `${receiverZip}`]
+    
+    return new Promise((resolve, reject)=>{
+        let shippingsInfo = {
+            "status": 1,
+            "msg": "新建地址失败"
+        }
+        connection.query(sql, sqlParams, (err, rows)=>{
+            if (err) reject(err);
+            shippingsInfo = {
+                "status": 0,
+                "msg": "新建地址成功",
+                "data": {
+                    "shippingId": 28
+                }
+            }
+            resolve(shippingsInfo)
+        })
+    })
+}
+
+function getShippings(req) {
+
+    return new Promise((resolve, reject)=>{
+        let getShippingsInfo = {
+            "status": 1,
+            "msg": "请登录之后查询"
+        }
+        if (Object.keys(loginUser).length === 0) {
+            resolve({
+                "status": 10,
+                "msg": "用户未登录,请登录"
+            }) 
+        }
+        connection.query(`SELECT * FROM shippings WHERE userId = '${loginUser.data.id}'`, (err, rows)=>{
+            if (err) reject(err)
+            getShippingsInfo = {
+                "status": 0,
+                "data": {
+                    "pageNum": 1,
+                    "pageSize": 10,
+                    "size": 2,
+                    "orderBy": null,
+                    "startRow": 1,
+                    "endRow": 2,
+                    "total": 2,
+                    "pages": 1,
+                    "list": rows,
+                    "firstPage": 1,
+                    "prePage": 0,
+                    "nextPage": 0,
+                    "lastPage": 1,
+                    "isFirstPage": true,
+                    "isLastPage": true,
+                    "hasPreviousPage": false,
+                    "hasNextPage": false,
+                    "navigatePages": 8,
+                    "navigatepageNums": [
+                        1
+                    ]
+                }
+            }
+            resolve(getShippingsInfo)
+        })
+    })
+}
+
+function updataAddress(req) {
+    let id = req.params.id
+    let receiverName = req.body.receiverName;
+    let receiverPhone = req.body.receiverPhone;
+    let receiverMobile = req.body.receiverMobile;
+    let receiverProvince = req.body.receiverProvince;
+    let receiverCity = req.body.receiverCity;
+    let receiverDistrict = req.body.receiverDistrict;
+    let receiverAddress = req.body.receiverAddress;
+    let receiverZip = req.body.receiverZip;
+
+    const sql = 'UPDATE shippings SET receiverName = ?, receiverPhone = ?, receiverMobile = ?, receiverProvince = ?, receiverCity = ?, receiverDistrict = ?, receiverAddress = ?, receiverZip = ? WHERE id = ?'
+    const sqlParams = [`${receiverName}`, `${receiverPhone}`, `${receiverMobile}`,`${receiverProvince}`, `${receiverCity}`, `${receiverDistrict}`, `${receiverAddress}`, `${receiverZip}`, `${id}`]
+
+    connection.query(sql, sqlParams,(err, rows) => {
+        if (err) return {
+            "status": 1,
+            "msg": "更新地址失败"
+        };
+    })
+    return {
+        "status": 0,
+        "msg": "更新地址成功"
+    }
+
+}
+
+function deleteAddress(req) {
+    let id = req.params.id
+    
+    const sql = 'DELETE FROM shippings WHERE id = ?';
+    const sqlParams = [`${id}`];
+
+    connection.query(sql, sqlParams,(err, rows) => {
+        if (err) return {
+            "status": 1,
+            "msg": "更新地址失败"
+        };
+    })
+    return {
+        "status": 0,
+        "msg": "更新地址成功"
+    }
+}
+
 module.exports = {
     queryAll,
     login,
@@ -391,5 +535,9 @@ module.exports = {
     updataProductQuantitySelected,
     deleteCartsProduct,
     updataProductQuantitySelectedAll,
-    productQuantitySelectAll
+    productQuantitySelectAll,
+    shippings,
+    getShippings,
+    updataAddress,
+    deleteAddress
 }

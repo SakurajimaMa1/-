@@ -80,6 +80,30 @@ const deleteCartsProduct = (req, res, next)=>{
         res.json(row)
     })
 }
+
+const shippings = (req, res, next)=>{
+    db.shippings(req).then((row)=>{
+        res.json(row)
+    })
+    // res.json(db.shippings(req));
+}
+
+const getShippings = (req, res, next)=>{
+    db.getShippings(req).then((row)=>{
+        res.json(row)
+    })
+}
+
+const updataAddress = (req, res, next)=>{
+    res.json(db.updataAddress(req));
+    // db.updataAddress(req).then((row)=>{
+    //     res.json(row)
+    // })
+}
+
+const deleteAddress = (req, res, next)=>{
+    res.json(db.deleteAddress(req));
+}
   
 module.exports = {
     list,
@@ -93,5 +117,8 @@ module.exports = {
     getCarts,
     updataProductQuantitySelected,
     deleteCartsProduct,
-    // productQuantitySelectAll
+    shippings,
+    getShippings,
+    updataAddress,
+    deleteAddress
 }

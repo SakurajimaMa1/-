@@ -201,9 +201,9 @@
                 this.$router.push('/login');
             },
             logout() {
-                this.axios.post('/user/logout', {
-
-                }).then((res={})=>{
+                this.axios.post('/user/logout').then((res={})=>{
+                    this.$message.success("退出成功");
+                    this.$cookie.set('userId', '', {expires: '-1'})
                     this.$store.dispatch('saveUserName', res.username);
                     this.axios.get('/carts/products/sum').then((res=0)=>{
                         this.$store.dispatch('saveCartCount', res);
