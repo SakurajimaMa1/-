@@ -2,10 +2,10 @@
     <div class="service">
         <div class="container">
             <ul>
-                <li><span class="icon-setting"></span>预约维修服务</li>
-                <li><span class="icon-7day"></span>7天无理由退货</li>
-                <li><span class="icon-15day"></span>15天免费换货</li>
-                <li><span class="icon-post"></span>满150元包邮</li>
+                <li><span class="icon-setting"></span>正品保障</li>
+                <li><span class="icon-7day"></span>急速物流</li>
+                <li><span class="icon-15day"></span>售后无忧</li>
+                <li><span class="icon-post"></span>省心购</li>
             </ul>
         </div>
     </div>
@@ -40,13 +40,13 @@
             }
             
             .icon-setting {
-                @include bgImg(20px, 20px, '/imgs/icon-setting.png');
+                @include bgImg(20px, 20px, '/imgs/icon-setting.jpg');
             }
             .icon-7day {
-                @include bgImg(20px, 20px, '/imgs/icon-7day.png');
+                @include bgImg(20px, 20px, '/imgs/icon-7day.jpg');
             }
             .icon-15day {
-                @include bgImg(20px, 20px, '/imgs/icon-15day.png');
+                @include bgImg(20px, 20px, '/imgs/icon-15day.jpg');
             }
             .icon-post {
                 @include bgImg(20px, 20px, '/imgs/icon-post.png');

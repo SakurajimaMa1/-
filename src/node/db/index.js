@@ -161,6 +161,7 @@ async function carts(req) {
     let selected = req.body.selected
     let queryProduct = {}
     let userId = loginUser.data.id
+    let determine = []
 
     let product = {
         params: {
@@ -172,14 +173,31 @@ async function carts(req) {
         queryProduct = res.data
     })
 
-    const sql = "INSERT INTO carts(userId, productId, quantity, productName, productSubtitle, productMainImage, productPrice, productStatus, productTotalPrice, productStock, productSelected) values(?,?,?,?,?,?,?,?,?,?,?)"
-    const sqlParams = [`${userId}`, `${productId}`, `1`, `${queryProduct.name}`, `${queryProduct.subtitle}`, `${queryProduct.subImages}`, `${queryProduct.price}`, `${queryProduct.status}`, `${queryProduct.price}`, `${queryProduct.stock}`,`${selected}`]
-    connection.query(sql, sqlParams, (err, rows) => {
-        if (err) return {
-            "status": 1,
-            "msg": "添加失败"
-        };
+    await getOrderOrShipping('carts', 'productId', productId).then((res)=>{
+        determine = res[0]
     })
+
+    if (determine) {
+        const sql = 'UPDATE carts SET quantity = ? WHERE productId = ?';
+        const sqlParams = [`${parseInt(determine.quantity)+1}`, `${productId}`];
+        connection.query(sql, sqlParams, (err, rows) => {
+            if (err) return {
+                "status": 1,
+                "msg": "添加失败"
+            };
+        })
+    } else {
+        const sql = "INSERT INTO carts(userId, productId, quantity, productName, productSubtitle, productMainImage, productPrice, productStatus, productTotalPrice, productStock, productSelected) values(?,?,?,?,?,?,?,?,?,?,?)"
+        const sqlParams = [`${userId}`, `${productId}`, `1`, `${queryProduct.name}`, `${queryProduct.subtitle}`, `${queryProduct.mainImage}`, `${queryProduct.price}`, `${queryProduct.status}`, `${queryProduct.price}`, `${queryProduct.stock}`,`${selected}`]
+        connection.query(sql, sqlParams, (err, rows) => {
+            if (err) return {
+                "status": 1,
+                "msg": "添加失败"
+            };
+        })
+    }
+
+    
 
     return new Promise((resolve, reject) => {
         connection.query(`SELECT * FROM carts WHERE userId = '${userId}'`, (err, rows) => {

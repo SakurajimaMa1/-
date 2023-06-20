@@ -3,10 +3,9 @@
         <div class="nav-topbar">
             <div class="container">
                 <div class="topbar-menu">
-                    <a href="javascript:;">小米商城</a>
-                    <a href="javascript:;">MUI</a>
-                    <a href="javascript:;">云服务</a>
-                    <a href="javascript:;">协议规则</a>
+                    <a href="javascript:;">母婴商城</a>
+                    <a href="javascript:;">商家入驻</a>
+                    <a href="javascript:;">客服服务</a>
                 </div>
                 <div class="topbar-user">
                     <a href="javascript:;" v-if="username">{{username}}</a>
@@ -25,7 +24,7 @@
                 </div>
                 <div class="header-menu">
                     <div class="item-menu">
-                        <span>小米手机</span>
+                        <span>品质奶粉</span>
                         <div class="children">
                             <ul>
                                 <!-- <li class="product" v-for="(item, index) in phoneList" :key="index">
@@ -95,11 +94,11 @@
                         </div>
                     </div>
                     <div class="item-menu">
-                        <span>RedMi红米</span>
+                        <span>品质尿裤</span>
                         <div class="children"></div>
                     </div>
                     <div class="item-menu">
-                        <span>电视</span>
+                        <span>婴儿辅食</span>
                         <div class="children">
                             <ul>
                                 <li class="product">
@@ -237,18 +236,18 @@
         .nav-topbar {
             height: 39px;
             line-height: 39px;
-            background-color: #333333;
-            color: #B0B0B0;
+            background-color: #F5F5F5;
+            color: #FFFFFF;
             .container {
                 @include flex();
                 a {
                     display: inline-block;
-                    color: #B0B0B0;
+                    color: #666666;
                     margin-right: 17px;
                 }
                 .my-cart {
                     width: 110px;
-                    background-color: #FF6600;
+                    background-color: #e4393c;
                     text-align: center;
                     color: #ffffff;
                     margin-right: 0;

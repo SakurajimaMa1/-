@@ -1,13 +1,13 @@
 <template>
     <div class="login">
       <div class="container">
-        <a href="/#/index"><img src="/imgs/login-logo.png" alt=""></a>
+        <a href="/#/index"><img src="/imgs/logo.png" alt=""></a>
       </div>
       <div class="wrapper">
         <div class="container">
           <div class="login-form">
             <h3>
-              <span class="checked">帐号登录</span><span class="sep-line">|</span><span>扫码登录</span>
+              <span class="checked">帐号登录</span>
             </h3>
             <div class="input">
               <input type="text" placeholder="请输入帐号" v-model="username">
@@ -27,12 +27,12 @@
       </div>
       <div class="footer">
         <div class="footer-link">
-          <a href="javascript:;" target="_blank">1111111</a><span>|</span>
-          <a href="javascript:;" target="_blank">222222</a><span>|</span>
-          <a href="javascript:;" target="_blank">3333333</a><span>|</span>
-          <a href="javascript:;" target="_blank">44444444</a>
+          <a href="javascript:;" target="_blank">正品保障</a><span>|</span>
+          <a href="javascript:;" target="_blank">急速物流</a><span>|</span>
+          <a href="javascript:;" target="_blank">售后无忧</a><span>|</span>
+          <a href="javascript:;" target="_blank">省心购</a>
         </div>
-        <p class="copyright">Copyright ©2019 啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊 All Rights Reserved.</p>
+        <p class="copyright">本网站直接或间接向消费者推销商品或者服务的商业宣传均属于“广告”（包装及参数、售后保障等商品信息除外）</p>
       </div>
     </div>
   </template>
@@ -103,7 +103,7 @@
             text-align:center;
             margin:40px auto 49px;
             .checked{
-              color:#FF6600;
+              color:#666666;
             }
             .sep-line{
               margin:0 32px;
@@ -135,7 +135,7 @@
             font-size:14px;
             cursor:pointer;
             .sms{
-              color:#FF6600;
+              color:red;
             }
             .reg{
               color:#999999;

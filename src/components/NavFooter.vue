@@ -1,16 +1,16 @@
 <template>
     <div class="footer">
         <div class="footer-logo">
-            <img src="/imgs/logo-footer.png" alt="">
-            <p>小米商城</p>
+            <!-- <img src="/imgs/logo.png" alt=""> -->
+            <p></p>
         </div>
         <div class="footer-link">
-            <a href="" target="_blank">牛牛主页</a><span>|</span>
-            <a href="" target="_blank">牛牛主页</a><span>|</span>
-            <a href="" target="_blank">牛牛主页</a><span>|</span>
-            <a href="" target="_blank">牛牛主页</a>
+            <a href="" target="_blank">购物指南</a><span>|</span>
+            <a href="" target="_blank">物流配送</a><span>|</span>
+            <a href="" target="_blank">售后服务</a><span>|</span>
+            <a href="" target="_blank">商家服务</a>
         </div>
-        <div class="copyright">Copyright @2023 <span class="domain">aa.com</span> aadasdasdasdasdasdas</div>
+        <div class="copyright">本网站直接或间接向消费者推销商品或者服务的商业宣传均属于“广告”（包装及参数、售后保障等商品信息除外）<span class="domain"></span></div>
     </div>
 </template>
 
@@ -23,8 +23,8 @@
 <style lang="scss" scoped>
     .footer {
         height: 234px;
-        border-top: 4px solid #FF6600;
-        background-color: #333333;
+        border-top: 4px solid #F5F5F5;
+        background-color: #F5F5F5;
         color: #999999;
         font-size: 16px;
         text-align: center;
