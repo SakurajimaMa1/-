@@ -104,6 +104,18 @@ const updataAddress = (req, res, next)=>{
 const deleteAddress = (req, res, next)=>{
     res.json(db.deleteAddress(req));
 }
+
+const orders = (req, res, next)=>{
+    db.orders(req).then((row)=>{
+        res.json(row)
+    })
+}
+
+const getOrderDetails = (req, res, next)=>{
+    db.getOrderDetails(req).then((row)=>{
+        res.json(row)
+    })
+}
   
 module.exports = {
     list,
@@ -120,5 +132,7 @@ module.exports = {
     shippings,
     getShippings,
     updataAddress,
-    deleteAddress
+    deleteAddress,
+    orders,
+    getOrderDetails
 }

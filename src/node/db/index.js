@@ -479,7 +479,7 @@ function getShippings(req) {
 }
 
 function updataAddress(req) {
-    let id = req.params.id
+    let id = req.params.id;
     let receiverName = req.body.receiverName;
     let receiverPhone = req.body.receiverPhone;
     let receiverMobile = req.body.receiverMobile;
@@ -523,6 +523,164 @@ function deleteAddress(req) {
     }
 }
 
+// 获取购物的选中状态来判断是否下单
+async function getCartsSelect() {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM carts WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
+            resolve(rows);
+        })
+    })
+}
+
+// 获取订单数据库表有几条内容
+async function getOrderLength() {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM orders`, (err, rows) => {
+            resolve(rows);
+        })
+    })
+}
+
+async function orders(req) {
+    let product = []
+    let userId = loginUser.data.id;
+    let orderNo = 100000;
+    let shippingId = req.body.shippingId;
+    let time = new Date();
+    let createTime = time.toLocaleDateString().replace(/\//g,'-')+' '+time.toLocaleTimeString();
+
+    await getCartsSelect().then((row)=>{
+        for (i = 0; i < row.length; i++) {
+            if (JSON.parse(row[i].productSelected)) {
+                product.push(row[i])
+            }
+        }
+    })
+
+    await getOrderLength().then((row)=>{
+        orderNo += (row.length + 1)
+    })
+
+    const sql = 'INSERT INTO orders(userId, orderNo, shippingId, postage, status, createTime) values(?,?,?,?,?,?)';
+    const sqlParams = [`${userId}`, `${orderNo}`, `${shippingId}`, `${0}`, `${1}`, `${createTime}`];
+
+    connection.query(sql, sqlParams, (err, rows)=>{
+        if (err) {
+            console.log('创建订单失败');
+            console.log(err);
+            return {
+                "status": 1,
+                "msg": "创建订单失败"
+            }
+        }
+        for (i = 0; i < product.length; i++) {
+            connection.query('INSERT INTO order_product(orderNo,productId,quantity) values(?,?,?)',[`${orderNo}`,`${product[i].productId}`,`${product[i].quantity}`], (err,row)=>{
+                if (err) console.log(err);
+            })
+        }
+    })
+    return new Promise((resolve, reject)=>{
+        let orderListInfo = {
+            "status": 1,
+            "msg": "创建订单失败"
+        }
+        getCartsSelect().then((row)=>{
+            orderListInfo = {
+                "status": 0,
+                "data": {
+                    "orderNo": orderNo,
+                    "payment": countCartTotalPrice(row).toFixed(2),
+                    "paymentType": null,
+                    "postage": 0,
+                    "status": 1,
+                    "paymentTime": null,
+                    "sendTime": null,
+                    "endTime": null,
+                    "closeTime": null,
+                    "createTime": createTime,
+                    "orderItemVoList": row,
+                    "shippingId": shippingId,
+                    "shippingVo": null
+                }
+            }
+            resolve(orderListInfo)
+        })
+    })
+}
+
+async function getOrderOrShipping(table, condition, id) {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM ${table} WHERE ${condition} = ${id}`, (err, rows) => {
+            if (err) console.log(err);
+            resolve(rows);
+        })
+    })
+}
+
+async function getOrderDetails(req) {
+    let orderNo = req.params.id
+    let orderList = []
+    let orderProduct = []
+    let orderShipping = []
+    let orderItem = []
+    let orderPrice = 0
+    let orderDetailsInfo = {
+        "status": 1,
+        "msg": "没有找到订单"
+    }
+
+    await getOrderOrShipping('orders', 'orderNo', orderNo).then((res)=>{
+        orderList = res[0]
+    })
+    await getOrderOrShipping('order_product', 'orderNo', orderNo).then((res)=>{
+        orderProduct = res
+    })
+    await getOrderOrShipping('shippings', 'id', orderList.shippingId).then((res)=>{
+        orderShipping = res[0]
+    })
+    for (i = 0; i < orderProduct.length; i++) {
+        await getOrderOrShipping('detail', 'id', orderProduct[i].productId).then((res)=>{
+            orderPrice += res[0].price * orderProduct[i].quantity;
+            orderItem.push({
+                "orderNo": orderNo,
+                "productId": orderProduct[i].productId,
+                "productName": res[0].name,
+                "productImage": res[0].mainImage,
+                "currentUnitPrice": res[0].price,
+                "quantity": orderProduct[i].quantity,
+                "totalPrice": res[0].price * parseInt(orderProduct[i].quantity),
+                "createTime": orderList.createTime
+            })
+        })
+    }
+
+    return new Promise((resolve, reject)=>{
+        orderDetailsInfo = {
+            "status": 0,
+            "data": {
+              "orderNo": orderNo,
+              "payment": orderPrice.toFixed(2),
+              "paymentType": 1,
+              "paymentTypeDesc": "在线支付",
+              "postage": 0,
+              "status": 10,
+              "statusDesc": "未支付",
+              "paymentTime": "",
+              "sendTime": "",
+              "endTime": "",
+              "closeTime": "",
+              "createTime": orderList.createTime,
+              "orderItemVoList": orderItem,
+              "imageHost": "",
+              "shippingId": orderList.shippingId,
+              "receiverName": orderShipping.receiverName,
+              "shippingVo": orderShipping
+            }
+        }
+        resolve(orderDetailsInfo)
+    })
+}
+
 module.exports = {
     queryAll,
     login,
@@ -539,5 +697,7 @@ module.exports = {
     shippings,
     getShippings,
     updataAddress,
-    deleteAddress
+    deleteAddress,
+    orders,
+    getOrderDetails
 }
