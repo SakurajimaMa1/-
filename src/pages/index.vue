@@ -62,7 +62,7 @@
         </div>
         <div class="product-box">
             <div class="container">
-                <h2>手机</h2>
+                <h2>婴儿用品</h2>
                 <div class="wrapper">
                     <div class="banner-left">
                         <a href="/#/product/35">
@@ -280,7 +280,7 @@
                             }
                         }
                         &:hover {
-                            background-color: #666666;
+                            background-color: #e4393c;
                             .children {
                                 display: block;
                             }

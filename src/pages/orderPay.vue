@@ -1,10 +1,10 @@
 <template>
     <div class="order-pay">
-      <!-- <order-header title="订单支付">
+      <order-header title="订单支付">
         <template v-slot:tip>
           <span>请谨防钓鱼链接或诈骗电话，了解更多</span>
         </template>
-      </order-header> -->
+      </order-header>
       <div class="wrapper">
         <div class="container">
           <div class="order-wrap">
@@ -34,7 +34,7 @@
                 <div class="detail-info">
                   <ul>
                     <li v-for="(item,index) in orderDetail" :key="index">
-                      <img v-lazy="item.productImage"/>{{item.productName}}
+                      <img v-lazy="'/imgs/'+item.productImage"/>{{item.productName}}
                     </li>
                   </ul>
                 </div>
@@ -55,25 +55,23 @@
           </div>
         </div>
       </div>
-      <scan-pay-code v-if="showPay" @close="closePayModal" :img="payImg"></scan-pay-code>
       <modal
-        title="支付确认"
-        btnType="3"
+        title="支付成功"
+        btnType="1"
         :showModal="showPayModal"
         sureText="查看订单"
-        cancelText="未支付"
         @cancel="showPayModal=false"
         @submit="goOrderList"
       >
         <template v-slot:body>
-          <p>您确认是否完成支付？</p>
+          <p>恭喜您，支付成功！</p>
         </template>
       </modal>
     </div>
   </template>
   <script>
 //   import QRCode from 'qrcode'
-//   import OrderHeader from './../components/OrderHeader'
+  import OrderHeader from './../components/OrderHeader'
 //   import ScanPayCode from './../components/ScanPayCode'
   import Modal from './../components/Modal'
   export default{
@@ -85,17 +83,14 @@
         orderDetail:[],//订单详情，包含商品列表
         showDetail:false,//是否显示订单详情
         payType:'',//支付类型
-        showPay:false,//是否显示微信支付弹框
-        payImg:'',//微信支付的二维码地址
+        showPay:false,
         showPayModal:false,//是否显示二次支付确认弹框
         payment:0,//订单总金额
-        T:''//定时器ID
       }
     },
     components:{
-    //   OrderHeader,
-    //   ScanPayCode,
-      Modal
+      Modal,
+      OrderHeader
     },
     mounted(){
       this.getOrderDetail();
@@ -110,44 +105,23 @@
         })
       },
       paySubmit(payType){
-        if(payType == 1){
-          window.open('/#/order/alipay?orderId='+this.orderId,'_blank');
-        }else{
+        if (payType == 1) {
           this.axios.post('/pay',{
             orderId:this.orderId,
-            orderName:'Vue高仿小米商城',
+            payType:payType //1支付宝，2微信
+          }).then(()=>{
+            this.showPayModal = true;
+          })
+        } else {
+          this.axios.post('/pay',{
+            orderId:this.orderId,
+            orderName:'母婴商城',
             amount:0.01,//单位元
-            payType:2 //1支付宝，2微信
-          }).then((res)=>{
-            console.log(res);
-        //     QRCode.toDataURL(res.content)
-        //     .then(url => {
-        //       this.showPay = true;
-        //       this.payImg = url;
-        //       this.loopOrderState();
-        //     })
-        //     .catch(() => {
-        //       this.$message.error('微信二维码生成失败，请稍后重试');
-        //     })
+            payType:payType //1支付宝，2微信
+          }).then(()=>{
+            this.showPayModal = true;
           })
         }
-      },
-      // 关闭微信弹框
-      closePayModal(){
-        this.showPay = false;
-        this.showPayModal = true;
-        clearInterval(this.T);
-      },
-      // 轮询当前订单支付状态
-      loopOrderState(){
-        this.T = setInterval(()=>{
-          this.axios.get(`/orders/${this.orderId}`).then((res)=>{
-            if(res.status == 20){
-              clearInterval(this.T);
-              this.goOrderList();
-            }
-          })
-        },1000);
       },
       goOrderList(){
         this.$router.push('/order/list');

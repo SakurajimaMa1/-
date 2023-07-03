@@ -101,8 +101,8 @@ function cartsProductsSum() {
     return new Promise((resolve, reject) => {
         if (Object.keys(loginUser).length === 0) {
             cartsInfo = {
-                "status": 0,
-                "data": 0
+                "status": 10,
+                "msg": "用户未登录,请登录"
             }
             resolve(cartsInfo)
         }
@@ -563,6 +563,8 @@ async function orders(req) {
     let product = []
     let userId = loginUser.data.id;
     let orderNo = 100000;
+    let payment = 0;
+    let deleteProductId = []
     let shippingId = req.body.shippingId;
     let time = new Date();
     let createTime = time.toLocaleDateString().replace(/\//g,'-')+' '+time.toLocaleTimeString();
@@ -570,7 +572,9 @@ async function orders(req) {
     await getCartsSelect().then((row)=>{
         for (i = 0; i < row.length; i++) {
             if (JSON.parse(row[i].productSelected)) {
-                product.push(row[i])
+                product.push(row[i]);
+                payment += row[i].productTotalPrice;
+                deleteProductId.push(row[i].id)
             }
         }
     })
@@ -579,8 +583,8 @@ async function orders(req) {
         orderNo += (row.length + 1)
     })
 
-    const sql = 'INSERT INTO orders(userId, orderNo, shippingId, postage, status, createTime) values(?,?,?,?,?,?)';
-    const sqlParams = [`${userId}`, `${orderNo}`, `${shippingId}`, `${0}`, `${1}`, `${createTime}`];
+    const sql = 'INSERT INTO orders(userId, orderNo, shippingId, payment, postage, status, createTime) values(?,?,?,?,?,?,?)';
+    const sqlParams = [`${userId}`, `${orderNo}`, `${shippingId}`, `${payment}`, `${0}`, `${10}`, `${createTime}`];
 
     connection.query(sql, sqlParams, (err, rows)=>{
         if (err) {
@@ -593,6 +597,11 @@ async function orders(req) {
         }
         for (i = 0; i < product.length; i++) {
             connection.query('INSERT INTO order_product(orderNo,productId,quantity) values(?,?,?)',[`${orderNo}`,`${product[i].productId}`,`${product[i].quantity}`], (err,row)=>{
+                if (err) console.log(err);
+            })
+        }
+        for (i = 0; i < deleteProductId.length; i++) {
+            connection.query(`DELETE FROM carts WHERE id = '${deleteProductId[i]}'`, (err,row)=>{
                 if (err) console.log(err);
             })
         }
@@ -699,6 +708,166 @@ async function getOrderDetails(req) {
     })
 }
 
+async function getOrderAll() {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM orders WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
+            if (err) console.log(err);
+            resolve(rows);
+        })
+    })
+}
+
+async function getOrderProductAll() {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM order_product`, (err, rows) => {
+            if (err) console.log(err);
+            resolve(rows);
+        })
+    })
+}
+
+async function getInfoAll(table) {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM ${table}`, (err, rows) => {
+            if (err) console.log(err);
+            resolve(rows);
+        })
+    })
+}
+
+async function getShippingAllById() {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM shippings WHERE userId = '${loginUser.data.id}'`, (err, rows) => {
+            if (err) console.log(err);
+            resolve(rows);
+        })
+    })
+}
+
+async function getOrders(req) {
+    let ordersList = []
+    let orderProductListAll = []
+    let detailAll = []
+    let shippings = []
+    let list = []
+
+    await getOrderAll().then((res)=>{
+        ordersList = res
+    })
+
+    await getOrderProductAll().then((res)=>{
+        orderProductListAll = res
+    })
+
+    await getInfoAll('detail').then((res)=>{
+        detailAll = res
+    })
+
+    await getShippingAllById().then((res)=>{
+        shippings = res
+    })
+
+    for (i = 0; i < ordersList.length; i++) {
+        let temp = []
+        let receiverName = ''
+        for (j = 0; j < orderProductListAll.length; j++) {
+            if (ordersList[i].orderNo == orderProductListAll[j].orderNo) {
+                for (p = 0; p < detailAll.length; p++) {
+                    if (orderProductListAll[j].productId == detailAll[p].categoryId) {
+                        temp.push({
+                            "orderNo": ordersList[i].orderNo,
+                            "productId": orderProductListAll[j].productId,
+                            "productName": detailAll[p].name,
+                            "productImage": detailAll[p].mainImage,
+                            "currentUnitPrice": detailAll[p].price,
+                            "quantity": orderProductListAll[j].quantity,
+                            "totalPrice": detailAll[p].price * orderProductListAll[j].quantity,
+                            "createTime": ordersList[i].createTime
+                        })
+                    }
+                }
+                
+            }
+        }
+        for (j = 0; j < shippings.length; j++) {
+            if (ordersList[i].shippingId == shippings[j].id) {
+                receiverName = shippings[j].receiverName
+            }
+        }
+        let orderTemp = {
+            "orderNo": ordersList[i].orderNo,
+            "payment": ordersList[i].payment,
+            "paymentType": ordersList[i].paymentType,
+            "paymentTypeDesc": "在线支付",
+            "postage": ordersList[i].postage,
+            "status": ordersList[i].status,
+            "statusDesc": ordersList[i].status == '10' ? "未支付" : "已支付",
+            "paymentTime": ordersList[i].paymentTime,
+            "sendTime": ordersList[i].sendTime,
+            "endTime": ordersList[i].endTime,
+            "closeTime": ordersList[i].closeTime,
+            "createTime": ordersList[i].createTime,
+            "orderItemVoList": temp,
+            "imageHost": "",
+            "shippingId": ordersList[i].shippingId,
+            "receiverName": receiverName,
+            "shippingVo": null
+        }
+        list.push(orderTemp)
+    }
+
+    return new Promise((resolve,reject)=>{
+        resolve({
+            "status": 0,
+            "data": {
+                "pageNum": 1,
+                "pageSize": 3,
+                "size": 3,
+                "orderBy": null,
+                "startRow": 1,
+                "endRow": 3,
+                "total": 16,
+                "pages": 6,
+                "list": list,
+                "firstPage": 1,
+                "prePage": 0,
+                "nextPage": 2,
+                "lastPage": 6,
+                "isFirstPage": true,
+                "isLastPage": false,
+                "hasPreviousPage": false,
+                "hasNextPage": true,
+                "navigatePages": 8,
+                "navigatepageNums": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ]
+            }
+        })
+    })
+}
+
+function pay(req) {
+    let orderId = req.body.orderId
+    let payType = req.body.payType
+    let time = new Date();
+    let createTime = time.toLocaleDateString().replace(/\//g,'-')+' '+time.toLocaleTimeString();
+
+    return new Promise((resolve,reject)=>{
+        connection.query(`UPDATE orders SET paymentType = '${payType}', paymentTime = '${createTime}', status = '${20}' WHERE orderNo = '${orderId}'`, (err, rows) => {
+            if (err) console.log(err);
+            resolve({
+                "status": 0,
+                "data": "支付成功"
+            });
+        })
+    })
+}
+
 module.exports = {
     queryAll,
     login,
@@ -717,5 +886,7 @@ module.exports = {
     updataAddress,
     deleteAddress,
     orders,
-    getOrderDetails
+    getOrderDetails,
+    getOrders,
+    pay
 }
