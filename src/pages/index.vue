@@ -10,8 +10,8 @@
                                 <ul v-for="(item, i) in menuList" v-bind:key="i">
                                     <li v-for="(sub, j) in item" v-bind:key="j">
                                         <a v-bind:href="sub?'/#/product/'+sub.id:''">
-                                            <img v-bind:src="sub?sub.img:'/imgs/item-box-1.png'" alt="">
-                                            {{ sub?sub.name:'小米9'}}
+                                            <img v-bind:src="'/imgs/'+sub.img" alt="">
+                                            {{ sub.name }}
                                         </a>
                                     </li>
                                 </ul>
@@ -19,9 +19,29 @@
                         </li>
                         <li class="menu-item">
                             <a href="javascript:;">纸尿裤</a>
+                            <div class="children">
+                                <ul v-for="(item, i) in menuListOne" v-bind:key="i">
+                                    <li v-for="(sub, j) in item" v-bind:key="j">
+                                        <a v-bind:href="sub?'/#/product/'+sub.id:''">
+                                            <img v-bind:src="'/imgs/'+sub.img" alt="">
+                                            {{ sub.name }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                         <li class="menu-item">
                             <a href="javascript:;">喂养洗护</a>
+                            <div class="children">
+                                <ul v-for="(item, i) in menuListTwo" v-bind:key="i">
+                                    <li v-for="(sub, j) in item" v-bind:key="j">
+                                        <a v-bind:href="sub?'/#/product/'+sub.id:''">
+                                            <img v-bind:src="'/imgs/'+sub.img" alt="">
+                                            {{ sub.name }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                         <li class="menu-item">
                             <a href="javascript:;">儿童玩具</a>
@@ -35,9 +55,9 @@
                         <li class="menu-item">
                             <a href="javascript:;">妈妈专区</a>
                         </li>
-                        <!-- <li class="menu-item">
-                            <a href="javascript:;">生活 箱包</a>
-                        </li> -->
+                        <li class="menu-item">
+                            <a href="javascript:;">关注宝宝</a>
+                        </li>
                     </ul>
                 </div>
                 <swiper v-bind:options="swiperOption">
@@ -70,12 +90,11 @@
                         </a>
                     </div>
                     <div class="list-box">
-                        <div class="list" v-for="(arr,i) in phoneList" v-bind:key="i">
+                        <div class="list" v-for="(arr,i) in itemList" v-bind:key="i">
                             <div class="item" v-for="(item, j) in arr" v-bind:key="j">
                                 <span v-bind:class="{'new-pro': j%2==0}">新品</span>
                                 <div class="item-img">
                                     <img v-lazy="'/imgs/'+item.mainImage" alt="">
-                                    <!-- <img v-lazy="'https://cdn.cnbj1.fds.api.mi-img.com/nr-pub/202305241112_ecb14876904f09f3cbc605350a02eff0.png?thumb=1&w=200&h=200&f=webp&q=90'" alt=""> -->
                                     
                                 </div>
                                 <div class="item-info">
@@ -125,12 +144,6 @@
                     autoplay: true,
                     loop: true,
                     effect: 'fade',
-                    // cubeEffect: {
-                    //     slideShadows: true,
-                    //     shadow: true,
-                    //     shadowOffset: 60,
-                    //     shadowScale: 0.6
-                    // },
                     fadeEffect: {
                         crossFade: true,
                     },
@@ -165,29 +178,9 @@
                         img: '/imgs/slider/slide-5.jpg'
                     },
                 ],
-                menuList: [
-                    [
-                        {
-                            id: 30,
-                            img: '/imgs/item-box-1.png',
-                            name: '小米CC'
-                        },{
-                            id: 31,
-                            img: '/imgs/item-box-2.png',
-                            name: '小米8青春版'
-                        },{
-                            id: 32,
-                            img: '/imgs/item-box-3.jpg',
-                            name: 'Redmi K20 Pro'
-                        },{
-                            id: 33,
-                            img: '/imgs/item-box-4.jpg',
-                            name: '移动4G专区'
-                        }
-                        
-
-                    ],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]
-                ],
+                menuList: [],
+                menuListOne: [],
+                menuListTwo: [],
                 adsList: [
                     {
                         id: 33,
@@ -203,7 +196,7 @@
                         img: '/imgs/ads/ads-4.jpg'
                     }
                 ],
-                phoneList: [
+                itemList: [
                     [1,1,1,1],[1,1,1,1]
                 ],
                 showModal: false
@@ -220,8 +213,14 @@
                         pageSize: 14
                     }
                 }).then((res)=>{
-                    // res.list = res.list.slice(6,14)
-                    this.phoneList = [res.list.slice(0,4), res.list.slice(4,8)]
+                    this.itemList = [res.list.slice(0,4), res.list.slice(4,8)]
+                }),
+                this.axios.get('/getheadertwo', {
+
+                }).then((res)=>{
+                    this.menuList = res.list;
+                    this.menuListOne = [res.list[1]]
+                    this.menuListTwo = res.list.slice(2,4)
                 })
             },
             addCart(id) {

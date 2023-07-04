@@ -27,67 +27,13 @@
                         <span>品质奶粉</span>
                         <div class="children">
                             <ul>
-                                <!-- <li class="product" v-for="(item, index) in phoneList" :key="index">
+                                <li class="product" v-for="(item, index) in itemList" :key="index">
                                     <a v-bind:href="'/#/product/'+item.id" target="_blank">
                                         <div class="pro-img">
-                                            <img v-lazy="item.mainImage" :alt="item.subtitle">
+                                            <img v-lazy="'/imgs/'+item.mainImage" :alt="item.subtitle">
                                         </div>
                                         <div class="pro-name">{{ item.name }}</div>
                                         <div class="pro-price">{{ item.price | currency}}</div>
-                                    </a>
-                                </li> -->
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="//cdn.cnbj1.fds.api.mi-img.com/mi-mall/4f9fe76880a5be3450d103bc23d6bf7e.png?thumb=1&w=160&h=110&f=webp&q=90" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="//cdn.cnbj1.fds.api.mi-img.com/mi-mall/4f9fe76880a5be3450d103bc23d6bf7e.png?thumb=1&w=160&h=110&f=webp&q=90" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="//cdn.cnbj1.fds.api.mi-img.com/mi-mall/4f9fe76880a5be3450d103bc23d6bf7e.png?thumb=1&w=160&h=110&f=webp&q=90" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="//cdn.cnbj1.fds.api.mi-img.com/mi-mall/4f9fe76880a5be3450d103bc23d6bf7e.png?thumb=1&w=160&h=110&f=webp&q=90" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="//cdn.cnbj1.fds.api.mi-img.com/mi-mall/4f9fe76880a5be3450d103bc23d6bf7e.png?thumb=1&w=160&h=110&f=webp&q=90" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="//cdn.cnbj1.fds.api.mi-img.com/mi-mall/4f9fe76880a5be3450d103bc23d6bf7e.png?thumb=1&w=160&h=110&f=webp&q=90" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
                                     </a>
                                 </li>
                             </ul>
@@ -95,64 +41,31 @@
                     </div>
                     <div class="item-menu">
                         <span>品质尿裤</span>
-                        <div class="children"></div>
+                        <div class="children">
+                            <ul>
+                                <li class="product" v-for="(item, index) in itemListOne" :key="index">
+                                    <a v-bind:href="'/#/product/'+item.id" target="_blank">
+                                        <div class="pro-img">
+                                            <img v-lazy="'/imgs/'+item.mainImage" :alt="item.subtitle">
+                                        </div>
+                                        <div class="pro-name">{{ item.name }}</div>
+                                        <div class="pro-price">{{ item.price | currency}}</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="item-menu">
                         <span>婴儿辅食</span>
                         <div class="children">
                             <ul>
-                                <li class="product">
-                                    <a href="" target="_blank">
+                                <li class="product" v-for="(item, index) in itemListTwo" :key="index">
+                                    <a v-bind:href="'/#/product/'+item.id" target="_blank">
                                         <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-3-1.jpg" alt="">
+                                            <img v-lazy="'/imgs/'+item.mainImage" :alt="item.subtitle">
                                         </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-3-2.jpg" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-3-3.png" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-3-4.jpg" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-3-5.jpg" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
-                                    </a>
-                                </li>
-                                <li class="product">
-                                    <a href="" target="_blank">
-                                        <div class="pro-img">
-                                            <img src="/imgs/nav-img/nav-3-6.png" alt="">
-                                        </div>
-                                        <div class="pro-name">小米</div>
-                                        <div class="pro-price">3999元</div>
+                                        <div class="pro-name">{{ item.name }}</div>
+                                        <div class="pro-price">{{ item.price | currency}}</div>
                                     </a>
                                 </li>
                             </ul>
@@ -175,7 +88,9 @@
         name: 'nav-header',
         data() {
             return {
-                phoneList: []
+                itemList: [],
+                itemListOne: [],
+                itemListTwo: []
             }
         },
         computed: {
@@ -193,7 +108,7 @@
             }
         },
         mounted() {
-            // getProductList()
+            this.getProductList();
         },
         methods: {
             login() {
@@ -210,15 +125,15 @@
                 })
             },
             getProductList() {
-                this.axios.get('/products', {
+                this.axios.get('/getheaderone', {
                     params: {
                         categoryId: '100012',
                         pageSize: 6
                     }
                 }).then((res)=>{
-                    if (res.list.length >= 6) {
-                        this.phoneList = res.list.slice(0,6);
-                    }
+                    this.itemList = res.list.slice(0,6);
+                    this.itemListOne = res.list.slice(6,12);
+                    this.itemListTwo = res.list.slice(12,18);
                 })
             },
             order() {

@@ -128,6 +128,18 @@ const pay = (req, res, next)=>{
         res.json(row)
     })
 }
+
+const getHeaderOne = (req, res, next)=>{
+    db.getHeaderOne().then((row)=>{
+        res.json(row)
+    })
+}
+
+const getHeaderTwo = (req, res, next)=>{
+    db.getHeaderTwo().then((row)=>{
+        res.json(row)
+    })
+}
   
 module.exports = {
     list,
@@ -148,5 +160,7 @@ module.exports = {
     orders,
     getOrderDetails,
     getOrders,
-    pay
+    pay,
+    getHeaderOne,
+    getHeaderTwo
 }

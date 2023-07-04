@@ -27,7 +27,6 @@ function queryAll() {
                 "msg": "参数错误"
             }
             if (Object.keys(rows).length !== 0 || typeof rows == 'undefined' || rows == null) {
-                console.log();
                 list = []
                 for (i = 0; i < rows.length; i++) {
                     resDetail = {
@@ -868,6 +867,69 @@ function pay(req) {
     })
 }
 
+function getHeaderOne() {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM detail WHERE id >=10`,(err, rows)=>{
+            if (Object.keys(rows).length !== 0 || typeof rows == 'undefined' || rows == null) {
+                list = []
+                for (i = 0; i < rows.length; i++) {
+                    resDetail = {
+                        "id": rows[i].id,
+                        "categoryId": rows[i].categoryId,
+                        "name": rows[i].name,
+                        "subtitle": rows[i].subtitle,
+                        "mainImage": rows[i].mainImage,
+                        "status": rows[i].status,
+                        "price": rows[i].price
+                    }
+                    list.push(resDetail)
+                }
+                res = {
+                    "status": 0,
+                    "data": {
+                        "list": list
+                    }
+                }
+            }
+            resolve(res);
+        })
+    })
+}
+
+function getHeaderTwo() {
+    return new Promise((resolve, reject)=>{
+        connection.query(`SELECT * FROM overview`,(err, rows)=>{
+            if (Object.keys(rows).length !== 0 || typeof rows == 'undefined' || rows == null) {
+                list = []
+                listAll = []
+                let p = 0
+                for (i = 0; i < rows.length; i++) {
+                    p++;
+                    resDetail = {
+                        "id": rows[i].id,
+                        "name": rows[i].name,
+                        "img": rows[i].img,
+                    }
+                    list.push(resDetail)
+                    if (p % 4 == 0) {
+                        listAll.push(list);
+                        list = [];
+                        p = 0;
+                    }
+                    
+                }
+                res = {
+                    "status": 0,
+                    "data": {
+                        "list": listAll
+                    }
+                }
+            }
+            resolve(res);
+        })
+    })
+}
+
 module.exports = {
     queryAll,
     login,
@@ -888,5 +950,7 @@ module.exports = {
     orders,
     getOrderDetails,
     getOrders,
-    pay
+    pay,
+    getHeaderOne,
+    getHeaderTwo
 }

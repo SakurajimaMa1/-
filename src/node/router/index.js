@@ -12,6 +12,8 @@ router.get('/api/carts', controller.getCarts)
 router.get('/api/shippings', controller.getShippings)
 router.get('/api/orders/:id', controller.getOrderDetails)
 router.get('/api/orders', controller.getOrders)
+router.get('/api/getheaderone', controller.getHeaderOne)
+router.get('/api/getheadertwo', controller.getHeaderTwo)
 
 router.post('/api/test', controller.queryAll)
 router.post('/api/user/login', controller.login)
