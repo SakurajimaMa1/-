@@ -1,25 +1,25 @@
 # mall
 
-## Project setup
+## 环境要求
 ```
-npm install
+至少node v12.3.1以上, mysql v5.7.26（建议用小皮面板）
 ```
 
-### Compiles and hot-reloads for development
+### 依赖安装
+```
+npm i
+```
+
+### 进入Mall主目录运行vue前端
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 进入Mall主目录打开src > node目录下运行node后端
 ```
-npm run build
+node index.js
+
+tips: 运行node后端之前需要更改src > node > db > index.js文件下的数据库信息
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-"# -" 
