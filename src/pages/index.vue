@@ -75,7 +75,7 @@
                 </a>
             </div>
             <div class="banner">
-                <a href="/#/detail/30">
+                <a href="/#/detail/21">
                     <img v-lazy="'/imgs/banner-1.png'" alt="">
                 </a>
             </div>
@@ -85,7 +85,7 @@
                 <h2>婴儿用品</h2>
                 <div class="wrapper">
                     <div class="banner-left">
-                        <a href="/#/detail/35">
+                        <a href="/#/detail/11">
                             <img v-lazy="'/imgs/mix-alpha.jpg'" alt="">
                         </a>
                     </div>
@@ -183,16 +183,16 @@
                 menuListTwo: [],
                 adsList: [
                     {
-                        id: 33,
+                        id: 1,
                         img: '/imgs/ads/ads-1.png'
                     },{
-                        id: 48,
+                        id: 21,
                         img: '/imgs/ads/ads-2.jpg'
                     },{
-                        id: 45,
+                        id: 5,
                         img: '/imgs/ads/ads-3.png'
                     },{
-                        id: 47,
+                        id: 17,
                         img: '/imgs/ads/ads-4.jpg'
                     }
                 ],
