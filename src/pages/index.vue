@@ -9,7 +9,7 @@
                             <div class="children">
                                 <ul v-for="(item, i) in menuList" v-bind:key="i">
                                     <li v-for="(sub, j) in item" v-bind:key="j">
-                                        <a v-bind:href="sub?'/#/product/'+sub.id:''">
+                                        <a v-bind:href="sub?'/#/detail/'+sub.id:''">
                                             <img v-bind:src="'/imgs/'+sub.img" alt="">
                                             {{ sub.name }}
                                         </a>
@@ -22,7 +22,7 @@
                             <div class="children">
                                 <ul v-for="(item, i) in menuListOne" v-bind:key="i">
                                     <li v-for="(sub, j) in item" v-bind:key="j">
-                                        <a v-bind:href="sub?'/#/product/'+sub.id:''">
+                                        <a v-bind:href="sub?'/#/detail/'+sub.id:''">
                                             <img v-bind:src="'/imgs/'+sub.img" alt="">
                                             {{ sub.name }}
                                         </a>
@@ -35,7 +35,7 @@
                             <div class="children">
                                 <ul v-for="(item, i) in menuListTwo" v-bind:key="i">
                                     <li v-for="(sub, j) in item" v-bind:key="j">
-                                        <a v-bind:href="sub?'/#/product/'+sub.id:''">
+                                        <a v-bind:href="sub?'/#/detail/'+sub.id:''">
                                             <img v-bind:src="'/imgs/'+sub.img" alt="">
                                             {{ sub.name }}
                                         </a>
@@ -62,7 +62,7 @@
                 </div>
                 <swiper v-bind:options="swiperOption">
                     <swiper-slide v-for="(item, index) in slideList" v-bind:key="index">
-                        <a v-bind:href="'/#/product/'+item.id"><img v-bind:src="item.img"></a>
+                        <a v-bind:href="'/#/detail/'+item.id"><img v-bind:src="item.img"></a>
                     </swiper-slide>
                     <div class="swiper-pagination" slot="pagination"></div>
                     <div class="swiper-button-prev" slot="button-prev"></div>
@@ -70,12 +70,12 @@
                 </swiper>
             </div>
             <div class="ads-boxs">
-                <a v-bind:href="'/#/product/'+item.id" v-for="(item, index) in adsList" v-bind:key="index">
+                <a v-bind:href="'/#/detail/'+item.id" v-for="(item, index) in adsList" v-bind:key="index">
                     <img v-lazy="item.img" alt="">
                 </a>
             </div>
             <div class="banner">
-                <a href="/#/product/30">
+                <a href="/#/detail/30">
                     <img v-lazy="'/imgs/banner-1.png'" alt="">
                 </a>
             </div>
@@ -85,7 +85,7 @@
                 <h2>婴儿用品</h2>
                 <div class="wrapper">
                     <div class="banner-left">
-                        <a href="/#/product/35">
+                        <a href="/#/detail/35">
                             <img v-lazy="'/imgs/mix-alpha.jpg'" alt="">
                         </a>
                     </div>
@@ -158,23 +158,23 @@
                 },
                 slideList: [
                     {
-                        id: '42',
+                        id: '1',
                         img: '/imgs/slider/slide-1.jpg'
                     },
                     {
-                        id: '45',
+                        id: '2',
                         img: '/imgs/slider/slide-2.jpg'
                     },
                     {
-                        id: '46',
+                        id: '3',
                         img: '/imgs/slider/slide-3.jpg'
                     },
                     {
-                        id: '',
+                        id: '4',
                         img: '/imgs/slider/slide-4.jpg'
                     },
                     {
-                        id: '',
+                        id: '5',
                         img: '/imgs/slider/slide-5.jpg'
                     },
                 ],

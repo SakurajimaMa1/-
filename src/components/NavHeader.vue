@@ -28,7 +28,7 @@
                         <div class="children">
                             <ul>
                                 <li class="product" v-for="(item, index) in itemList" :key="index">
-                                    <a v-bind:href="'/#/product/'+item.id" target="_blank">
+                                    <a v-bind:href="'/#/detail/'+item.id" target="_blank">
                                         <div class="pro-img">
                                             <img v-lazy="'/imgs/'+item.mainImage" :alt="item.subtitle">
                                         </div>
@@ -44,7 +44,7 @@
                         <div class="children">
                             <ul>
                                 <li class="product" v-for="(item, index) in itemListOne" :key="index">
-                                    <a v-bind:href="'/#/product/'+item.id" target="_blank">
+                                    <a v-bind:href="'/#/detail/'+item.id" target="_blank">
                                         <div class="pro-img">
                                             <img v-lazy="'/imgs/'+item.mainImage" :alt="item.subtitle">
                                         </div>
@@ -60,7 +60,7 @@
                         <div class="children">
                             <ul>
                                 <li class="product" v-for="(item, index) in itemListTwo" :key="index">
-                                    <a v-bind:href="'/#/product/'+item.id" target="_blank">
+                                    <a v-bind:href="'/#/detail/'+item.id" target="_blank">
                                         <div class="pro-img">
                                             <img v-lazy="'/imgs/'+item.mainImage" :alt="item.subtitle">
                                         </div>

@@ -5,43 +5,48 @@
         <div class="container clearfix">
           <div class="swiper">
             <swiper :options="swiperOption">
-                <swiper-slide><img src="/imgs/detail/phone-1.jpg" alt=""></swiper-slide>
-                <swiper-slide><img src="/imgs/detail/phone-2.jpg" alt=""></swiper-slide>
+                <swiper-slide><img v-bind:src="'/imgs/'+product.mainImage" alt=""></swiper-slide>
+                <!-- <swiper-slide><img src="/imgs/detail/phone-2.jpg" alt=""></swiper-slide>
                 <swiper-slide><img src="/imgs/detail/phone-3.jpg" alt=""></swiper-slide>
-                <swiper-slide><img src="/imgs/detail/phone-4.jpg" alt=""></swiper-slide>
+                <swiper-slide><img src="/imgs/detail/phone-4.jpg" alt=""></swiper-slide> -->
                 <!-- Optional controls -->
                 <div class="swiper-pagination"  slot="pagination"></div>
             </swiper>
           </div>
           <div class="content">
             <h2 class="item-title">{{product.name}}</h2>
-            <p class="item-info">相机全新升级 / 960帧超慢动作 / 手持超级夜景 / 全球首款双频GPS / 骁龙845处理器 / 红<br/>外人脸解锁 / AI变焦双摄 / 三星 AMOLED 屏</p>
-            <div class="delivery">小米自营</div>
-            <div class="item-price">{{product.price}}元<span class="del">1999元</span></div>
+            <!-- <p class="item-info"></p> -->
+            <div class="delivery">官方自营</div>
+            <div class="item-price">{{product.price}}元<span class="del">399元</span></div>
             <div class="line"></div>
             <div class="item-addr">
               <i class="icon-loc"></i>
               <div class="addr">北京 北京市 朝阳区 安定门街道</div>
-              <div class="stock">有现货</div>
+              <div class="stock">包邮</div>
             </div>
             <div class="item-version clearfix">
-              <h2>选择版本</h2>
-              <div class="phone fl" :class="{'checked':version==1}" @click="version=1">6GB+64GB 全网通</div>
-              <div class="phone fr" :class="{'checked':version==2}" @click="version=2">4GB+64GB 移动4G</div>
+              <h2>规格</h2>
+              <div class="phone fl" :class="{'checked':version==1}" @click="version=1">一个装</div>
+              <div class="phone fr" :class="{'checked':version==2}" @click="version=2">两个装</div>
             </div>
             <div class="item-color">
-              <h2>选择颜色</h2>
-              <div class="phone checked">
+              <h2>数量</h2>
+              <!-- <div class="phone checked">
                 <span class="color"></span>
                 深空灰
+              </div> -->
+              <div class="num-box">
+                <a href="javascript:;" @click="updateCart('-')">-</a>
+                <span>{{ quantity }}</span>
+                <a href="javascript:;" @click="updateCart('+')">+</a>
               </div>
             </div>
             <div class="item-total">
               <div class="phone-info clearfix">
-                <div class="fl">{{product.name}} {{version==1?'6GB+64GB 全网通':'4GB+64GB 移动4G'}} 深灰色</div>
+                <div class="fl">{{product.name}}</div>
                 <div class="fr">{{product.price}}元</div>
               </div>
-              <div class="phone-total">总计：{{product.price}}元</div>
+              <div class="phone-total">总计：{{product.price * quantity}}元</div>
             </div>
             <div class="btn-group">
               <a href="javascript:;" class="btn btn-huge fl" @click="addCart">加入购物车</a>
@@ -58,11 +63,25 @@
         </div>
     </div>
       <service-bar></service-bar>
+      <modal 
+            title="提示" 
+            sureText="查看购物车" 
+            btnType="1" 
+            modalType="middle" 
+            v-bind:showModal="showModal"
+            v-on:submit="goToCart"
+            v-on:cancel="showModal=false"
+            >
+            <template v-slot:body>
+                <p>商品添加成功！</p>
+            </template>
+        </modal>
     </div>
 </template>
 <script>
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import ProductParam from './../components/ProductParam'
+  import Modal from './../components/Modal.vue'
   import ServiceBar from './../components/ServiceBar';
   export default{
     name:'detail',
@@ -78,14 +97,17 @@
             el: '.swiper-pagination',
             clickable :true,
           }
-        }
+        },
+        quantity: 1,
+        showModal: false
       }
     },
     components:{
       swiper,
       swiperSlide,
       ProductParam,
-      ServiceBar
+      ServiceBar,
+      Modal
     },
     mounted(){
       this.getProductInfo();
@@ -97,14 +119,29 @@
         })
       },
       addCart(){
-        this.axios.post('/carts',{
+        this.axios.post('/itemcarts',{
           productId:this.id,
-          selected: true
+          selected: true,
+          quantity: this.quantity
         }).then((res={cartProductVoList:0})=>{
             console.log(res);
             this.$store.dispatch('saveCartCount',res.cartProductVoList.length);
+            this.showModal = true;
         //   this.$router.push('/cart');
         });
+      },
+      updateCart(type) {
+        if(type == '-'){
+            if(this.quantity == 1){
+              return;
+            }
+            --this.quantity;
+        }else if(type == '+') {
+          ++this.quantity;
+        }
+      },
+      goToCart() {
+        this.$router.push('/cart');
       }
     }
   }
@@ -118,10 +155,12 @@
           float:left;
           width:642px;
           height:617px;
-          margin-top:5px;
+          margin-top:45px;
           img{
-            width:100%;
-            height:100%;
+            width:540px;
+            height:517px;
+            // width: 100%;
+            // height: 100%;
           }
         }
         .content{
@@ -134,20 +173,20 @@
             padding-bottom:16px;
             height: 26px;
           }
-          .item-info{
-            font-size:14px;
-            height: 36px;
-          }
+          // .item-info{
+          //   font-size:14px;
+          //   height: 36px;
+          // }
           .delivery{
             font-size:16px;
-            color:#FF6700;
+            color:#e4393c;
             margin-top:26px;
             margin-bottom:14px;
             height: 15px;
           }
           .item-price{
             font-size:20px;
-            color:#FF6700;
+            color:#e4393c;
             height: 19px;
             .del{
               font-size:16px;
@@ -183,7 +222,7 @@
             }
             .stock{
               margin-top:15px;
-              color:#FF6700;
+              color:#e4393c;
             }
           }
           .item-version,.item-color{
@@ -215,8 +254,29 @@
                 background-color:#666666;
               }
               &.checked{
-                border:1px solid #FF6600;
-                color:#FF6600;
+                border:1px solid #e4393c;
+                color:#e4393c;
+              }
+            }
+          }
+          .item-color {
+            .num-box {
+              width:150px;
+              height:40px;
+              line-height:40px;
+              font-size:14px;
+              border:1px solid #E5E5E5;
+              a{
+                display:inline-block;
+                width:50px;
+                color:#333333;
+                text-align: center;
+              }
+              span{
+                display:inline-block;
+                width:50px;
+                text-align: center;
+                color:#333333;
               }
             }
           }
@@ -230,7 +290,7 @@
             box-sizing: border-box;
             .phone-total{
               font-size: 24px;
-              color: #FF6600;
+              color: #e4393c;
               margin-top: 18px;
             }
           }

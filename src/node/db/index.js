@@ -221,6 +221,80 @@ async function carts(req) {
     })
 }
 
+async function itemCarts(req) {
+    if (Object.keys(loginUser).length === 0) {
+        return {
+            "status": 10,
+            "msg": "用户未登录,请登录"
+        }
+    }
+
+    let productId = req.body.productId
+    let selected = req.body.selected
+    let quantity = req.body.quantity
+    let queryProduct = {}
+    let userId = loginUser.data.id
+    let determine = []
+
+    let product = {
+        params: {
+            id: productId
+        }
+    }
+
+    await this.getProductsIdInfo(product).then((res)=>{
+        queryProduct = res.data
+    })
+
+    await getOrderOrShipping('carts', 'productId', productId).then((res)=>{
+        determine = res[0]
+    })
+
+    if (determine) {
+        const sql = 'UPDATE carts SET quantity = ? WHERE productId = ?';
+        const sqlParams = [`${parseInt(determine.quantity)+1}`, `${productId}`];
+        connection.query(sql, sqlParams, (err, rows) => {
+            if (err) return {
+                "status": 1,
+                "msg": "添加失败"
+            };
+        })
+    } else {
+        const sql = "INSERT INTO carts(userId, productId, quantity, productName, productSubtitle, productMainImage, productPrice, productStatus, productTotalPrice, productStock, productSelected) values(?,?,?,?,?,?,?,?,?,?,?)"
+        const sqlParams = [`${userId}`, `${productId}`, `${quantity}`, `${queryProduct.name}`, `${queryProduct.subtitle}`, `${queryProduct.mainImage}`, `${queryProduct.price}`, `${queryProduct.status}`, `${queryProduct.price}`, `${queryProduct.stock}`,`${selected}`]
+        connection.query(sql, sqlParams, (err, rows) => {
+            if (err) return {
+                "status": 1,
+                "msg": "添加失败"
+            };
+        })
+    }
+
+    
+
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM carts WHERE userId = '${userId}'`, (err, rows) => {
+            if (err) reject(err);
+            let selected = true;
+            for (i = 0; i < rows.length; i++) {
+                if (rows[i].productSelected == "false") {
+                    selected = false;
+                }
+            }
+            cartsInfo = {
+                "status": 0,
+                "data": {
+                    "cartProductVoList": rows,
+                    "selectedAll": selected,
+                    "cartTotalPrice": countCartTotalPrice(rows).toFixed(2)
+                },
+                
+            }
+            resolve(cartsInfo);
+        })
+    })
+}
+
 function logout() {
     loginUser = {}
     return {
@@ -952,5 +1026,6 @@ module.exports = {
     getOrders,
     pay,
     getHeaderOne,
-    getHeaderTwo
+    getHeaderTwo,
+    itemCarts
 }
