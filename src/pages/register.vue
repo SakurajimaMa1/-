@@ -2,6 +2,7 @@
     <div class="login">
       <div class="container">
         <a href="/#/index"><img src="/imgs/logo.png" alt=""></a>
+        <h2>欢迎注册</h2>
       </div>
       <div class="wrapper">
         <div class="container">
@@ -35,10 +36,10 @@
         <p class="copyright">本网站直接或间接向消费者推销商品或者服务的商业宣传均属于“广告”（包装及参数、售后保障等商品信息除外）</p>
       </div>
     </div>
-  </template>
-  <script>
+</template>
+<script>
   export default {
-    name: 'login',
+    name: 'register',
     data(){
       return {
         username:'',
@@ -76,30 +77,43 @@
     }
     
   }
-  </script>
-  <style lang="scss" scoped>
+</script>
+<style lang="scss" scoped>
   .login{
     &>.container{
       height:113px;
+      border: 1px solid red;
+      
       img{
         width:auto;
         height:100%;
+        display: inline-block;
+      }
+      h2 {
+        display: inline-block;
+        // text-align: center;
+        // align-items: center;
+        vertical-align: middle;
+        font-size: 24px;
       }
     }
     .wrapper{
-      background:url('/imgs/login-bg.jpg') no-repeat center;
+    //   background:url('/imgs/login-bg.jpg') no-repeat center;
+        background-color: #f8f8f8;
       .container{
         height:576px;
         .login-form{
           box-sizing: border-box;
           padding-left: 31px;
           padding-right: 31px;
-          width:410px;
+          width:910px;
           height:510px;
           background-color:#ffffff;
           position:absolute;
           bottom:29px;
-          right:0;
+          left:13%;
+          border: 1px solid #ddd;
+          border-top: 3px solid #e4393c;
           h3{
             line-height:23px;
             font-size:24px;
@@ -114,7 +128,8 @@
           }
           .input{
             display:inline-block;
-            width:348px;
+            // width:348px;
+            width: 100%;
             height:50px;
             border:1px solid #E5E5E5;
             margin-bottom:20px;
@@ -170,4 +185,4 @@
       }
     }
   }
-  </style>
+</style>

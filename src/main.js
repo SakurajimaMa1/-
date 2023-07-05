@@ -27,11 +27,20 @@ axios.interceptors.response.use(function(response) {
   if (res.status == 0) {
     return res.data;
   }else if (res.status == 10) {
-    if (path != '#/index') {
-      window.location.href = '/#/login'
+    switch (path) {
+      case '#/index':
+        break;
+      case '#/register':
+        break;
+      default :
+        window.location.href = '/#/login'
     }
+    // if (path != '#/index') {
+    //   window.location.href = '/#/login'
+    // }
     return Promise.reject(res);
-  }else {
+  }
+  else {
     // alert(res.msg);
     Message.warning(res.msg);
     return Promise.reject(res);
