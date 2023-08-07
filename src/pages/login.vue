@@ -20,7 +20,7 @@
             </div>
             <div class="tips">
               <div class="reg" @click="goToRegister">立即注册</div>
-              <div class="reg">忘记密码？</div>
+              <!-- <div class="reg">忘记密码？</div> -->
             </div>
           </div>
         </div>

@@ -1004,6 +1004,43 @@ function getHeaderTwo() {
     })
 }
 
+function register(req) {
+    return new Promise((resolve, reject)=>{
+        let username = req.body.username
+        let password = req.body.password
+        let email = req.body.email
+        let phone = req.body.phone
+        let time = new Date();
+        let createTime = time.toLocaleDateString().replace(/\//g,'-')+' '+time.toLocaleTimeString();
+        
+        connection.query(`SELECT * FROM user WHERE username = '${username}'`, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (rows.length === 0) {
+                    connection.query(`INSERT INTO user(username, password, email, phone, createTime, updateTime) values(?,?,?,?,?,?)`,[`${username}`,`${password}`,`${email}`,`${phone}`,`${createTime}`,`${createTime}`], (err, rows)=>{
+                        if (err) console.log(err);
+                    })
+                    resolve({
+                        "status": 0,
+                        "data": {
+                            "msg": "注册成功"
+                        }
+                    });
+                } else {
+                    // rows 不为空
+                    resolve({
+                        "status": 0,
+                        "data": {
+                            "msg": "用户已存在"
+                        }
+                    });
+                }
+            }
+        });
+    })
+}
+
 module.exports = {
     queryAll,
     login,
@@ -1027,5 +1064,6 @@ module.exports = {
     pay,
     getHeaderOne,
     getHeaderTwo,
-    itemCarts
+    itemCarts,
+    register
 }

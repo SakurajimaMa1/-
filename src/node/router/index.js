@@ -23,6 +23,7 @@ router.post('/api/user/logout', controller.logout)
 router.post('/api/shippings', controller.shippings)
 router.post('/api/orders', controller.orders)
 router.post('/api/pay', controller.pay)
+router.post('/api/user/register', controller.register)
 
 router.put('/api/carts/:id', controller.updataProductQuantitySelected)
 router.put('/api/shippings/:id', controller.updataAddress)

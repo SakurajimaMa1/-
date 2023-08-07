@@ -19,14 +19,29 @@
               <input type="text" placeholder="请输入帐号" v-model="username">
             </div>
             <div class="input">
+              <div class="input-title">
+                <span>密码</span>
+              </div>
               <input type="password" placeholder="请输入密码" v-model="password">
             </div>
+            <div class="input">
+              <div class="input-title">
+                <span>邮箱</span>
+              </div>
+              <input type="text" placeholder="请输入邮箱" v-model="email">
+            </div>
+            <div class="input">
+              <div class="input-title">
+                <span>手机号</span>
+              </div>
+              <input type="text" placeholder="请输入手机号" v-model="phone">
+            </div>
             <div class="btn-box">
-              <a href="javascript:;" class="btn" @click="login">登录</a>
+              <a href="javascript:;" class="btn" @click="register">注册</a>
             </div>
             <div class="tips">
-              <div class="reg" @click="goToRegister">立即注册</div>
-              <div class="reg">忘记密码？</div>
+              <!-- <div class="reg" @click="goToRegister">立即注册</div>
+              <div class="reg">忘记密码？</div> -->
             </div>
           </div>
         </div>
@@ -49,35 +64,37 @@
       return {
         username:'',
         password:'',
+        email:'',
+        phone:'',
         userId:''
       }
     },
     methods: {
-        login() {
-          let { username, password } = this;
-          this.axios.post('/user/login', {
-              username,
-              password
-          }).then((res)=>{
-            this.$cookie.set('userId', res.id, {expires:'1M'});
-            this.$store.dispatch('saveUserName', res.username);
-            this.$router.push('/index');
-            this.axios.get('/carts/products/sum').then((res=0)=>{
-              this.$store.dispatch('saveCartCount', res);
-            })
-          })
-        },
         register() {
+          let { username, password, email, phone } = this;
+          if (username == '' || password == '' || email == '' || phone == '') {
+            this.$message.error("请填写完整信息");
+          }else{
             this.axios.post('/user/register', {
-                username: '',
-                password: ''
-            }).then(()=>{
-              this.$message.success("注册成功")
-              // alert("注册成功")
+              username,
+              password,
+              email,
+              phone
+            }).then((res)=>{
+              if (res.msg == "注册成功") {
+                this.$message.success("注册成功")
+                setTimeout(()=>{
+                  this.goToRegister();
+                }, 1700)
+              } else {
+                this.$message.error("用户已存在")
+              }
             })
+          }
+          
         },
         goToRegister() {
-          this.$router.push('/register');
+          this.$router.push('/login');
         }
     }
     
@@ -137,10 +154,15 @@
             .input-title {
               width: 70px;
               height: 100%;
-              border: 1px solid red;
+              // border: 1px solid red;
               display: flex;
               align-items: center;
+              text-align: center;
               font-size: 16px;
+              span {
+                display: inline-block;
+                margin: auto;
+              }
             }
             input{
               width: 100%;

@@ -146,6 +146,12 @@ const itemCarts = (req, res, next)=>{
         res.json(row)
     })
 }
+
+const register = (req, res, next)=>{
+    db.register(req).then((row)=>{
+        res.json(row)
+    })
+}
   
 module.exports = {
     list,
@@ -169,5 +175,6 @@ module.exports = {
     pay,
     getHeaderOne,
     getHeaderTwo,
-    itemCarts
+    itemCarts,
+    register
 }
