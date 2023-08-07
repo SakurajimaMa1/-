@@ -1,16 +1,21 @@
 <template>
     <div class="login">
       <div class="container">
-        <a href="/#/index"><img src="/imgs/logo.png" alt=""></a>
+        <div class="top-log">
+          <a href="/#/index"><img src="/imgs/logo.png" alt=""></a>
+        </div>
         <h2>欢迎注册</h2>
       </div>
       <div class="wrapper">
         <div class="container">
           <div class="login-form">
             <h3>
-              <span class="checked">帐号登录</span>
+              <span class="checked">帐号注册</span>
             </h3>
             <div class="input">
+              <div class="input-title">
+                <span>账号</span>
+              </div>
               <input type="text" placeholder="请输入帐号" v-model="username">
             </div>
             <div class="input">
@@ -82,18 +87,13 @@
   .login{
     &>.container{
       height:113px;
-      border: 1px solid red;
-      
-      img{
+      display: flex;
+      align-items: center;
+      .top-log {
         width:auto;
         height:100%;
-        display: inline-block;
       }
       h2 {
-        display: inline-block;
-        // text-align: center;
-        // align-items: center;
-        vertical-align: middle;
         font-size: 24px;
       }
     }
@@ -133,6 +133,15 @@
             height:50px;
             border:1px solid #E5E5E5;
             margin-bottom:20px;
+            display: flex;
+            .input-title {
+              width: 70px;
+              height: 100%;
+              border: 1px solid red;
+              display: flex;
+              align-items: center;
+              font-size: 16px;
+            }
             input{
               width: 100%;
               height: 100%;
